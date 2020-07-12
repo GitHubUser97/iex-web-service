@@ -1,4 +1,7 @@
-from flask import Flask, jsonify
+from flask import Flask
+from flask import jsonify
+from flask_migrate import Migrate
+from flask_socketio import SocketIO
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.exceptions import HTTPException
@@ -7,6 +10,8 @@ import settings
 from util import Util
 
 app = Flask(__name__)
+
+socketio = SocketIO(app)
 
 
 @app.errorhandler(Exception)
@@ -28,9 +33,14 @@ db = SQLAlchemy(app)
 api = Api(app)
 api.prefix = '/api'
 
+migrate = Migrate(app, db)
+
 from endpoints.HealthCheckEndpoint import HealthCheckEndpoint
 
 api.add_resource(HealthCheckEndpoint, '/health_check')
 
+from managers.SocketManager import *
+
 if __name__ == '__main__':
-    app.run()
+    Util.print_banner()
+    socketio.run(app, debug=True)
