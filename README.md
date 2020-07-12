@@ -18,6 +18,7 @@ pip install -r requirements.txt
 Prepare the database and migrations
 
 ```bash
+flask db migrate
 python manage.py db migrate
 python manage.py db upgrade
 ```
